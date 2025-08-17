@@ -1,0 +1,105 @@
+#include<iostream>
+using namespace std;
+
+const int rows = 5;
+const int cols = 5;
+const int price = 150;
+
+void bookseat(int seats[rows][cols]) {
+    int row, col;
+    cout << "Enter seat you want to book (row col): ";
+    cin >> row >> col;
+
+    if (row >= 0 && row < rows && col >= 0 && col < cols) {
+        if (seats[row][col] == 0) {
+            seats[row][col] = 1;
+            cout << " Seat booked successfully\n";
+        } else {
+            cout << "Seat already booked\n";
+        }
+    } else {
+        cout << " Seat not found\n";
+    }
+}
+
+void cancelSeat(int seats[rows][cols]) {
+    int row, col;
+    cout << "Enter seat to cancel (row col): ";
+    cin >> row >> col;
+
+    if (row >= 0 && row < rows && col >= 0 && col < cols) {
+        if (seats[row][col] == 1) {
+            seats[row][col] = 0;
+            cout << " Seat cancelled.\n";
+        } else {
+            cout << " Seat is not booked\n";
+        }
+    } else {
+        cout << "Seat not found\n";
+    }
+}
+
+int countbookedseats(int seats[rows][cols]) {
+    int count = 0;
+    for (int i = 0; i < rows; ++i)
+        for (int j = 0; j < cols; ++j)
+            if (seats[i][j] == 1)
+                count++;
+    return count;
+}
+
+void displayseats(int seats[rows][cols]) {
+    cout << " Seating Layout \n";
+    cout << "0 = Available | 1 = Booked\n";
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            cout << seats[i][j] << " ";
+        }
+        cout << "\n";
+    }
+}
+
+void showMenu() {
+    cout << "\n====== Movie Ticket Booking System ======\n";
+    cout << "1. Book a seat\n";
+    cout << "2. Cancel a seat\n";
+    cout << "3. Display seats\n";
+    cout << "4. Show total booked seats\n";
+    cout << "5. Show ticket pricing\n";
+    cout << "6. Exit\n";
+    cout << "Choose an option: ";
+}
+
+int main() {
+    int seats[rows][cols] = {0};
+    int choice;
+
+    do {
+        showMenu();
+        cin >> choice;
+        switch (choice) {
+            case 1:
+                bookseat(seats);
+                break;
+            case 2:
+                cancelSeat(seats);
+                break;
+            case 3:
+                displayseats(seats);
+                break;
+            case 4:
+                cout << "Total booked seats: " << countbookedseats(seats) << "\n";
+                break;
+            case 5:
+                cout << "Ticket price: " << price << "\n";
+                break;
+            case 6:
+                cout << "Thank you! Visit again.\n";
+                break;
+            default:
+                cout << " Invalid option\n";
+        }
+    } while (choice != 6);
+
+    return 0;
+}
