@@ -1,0 +1,91 @@
+// Linear Probing - Parking System
+#include <iostream>
+#include <vector>
+using namespace std;
+
+vector<int> table;
+int size;
+
+int hashFunc(int key) {
+    return key % size;
+}
+
+void insert(int key) {
+    int startIndex = hashFunc(key);
+    int index = startIndex;
+
+    while (table[index] != -1) {
+        cout << "Slot " << index << " is occupied, checking next..." << endl;
+        index = (index + 1) % size;
+
+        if (startIndex == index) {
+            cout << "Parking full! Cannot insert vehicle " << key << endl;
+            return;
+        }
+    }
+    table[index] = key;
+    cout << "Vehicle " << key << " parked at slot " << index << endl;
+}
+
+void display_table() {
+    cout << "\n------ Parking Slots Status ------\n";
+    for (int i = 0; i < size; i++) {
+        if (table[i] != -1)
+            cout << "Slot " << i << ": Vehicle " << table[i] << endl;
+        else
+            cout << "Slot " << i << ": Empty" << endl;
+    }
+    cout << "---------------------------------\n";
+}
+
+int main() {
+    int ch;
+
+    do {
+        cout << "\n------------ Parking Menu ------------" << endl;
+        cout << "1. Create a new parking lot" << endl;
+        cout << "2. Park a vehicle" << endl;
+        cout << "3. Show parking slots" << endl;
+        cout << "4. Exit" << endl;
+        cout << "Enter your choice: ";
+        cin >> ch;
+
+        switch (ch) {
+            case 1: {
+                cout << "Enter the size of parking lot: ";
+                cin >> size;
+                table.assign(size, -1); // reset parking
+                cout << "Parking lot created with " << size << " slots!" << endl;
+                break;
+            }
+
+            case 2: {
+                if (size == 0) {
+                    cout << "Please create a parking lot first!" << endl;
+                    break;
+                }
+                int key;
+                cout << "Enter your vehicle number: ";
+                cin >> key;
+                insert(key);
+                break;
+            }
+
+            case 3:
+                if (size == 0)
+                    cout << "No parking lot created yet!" << endl;
+                else
+                    display_table();
+                break;
+
+            case 4:
+                cout << "Exiting... Thank you!" << endl;
+                break;
+
+            default:
+                cout << "Enter a valid choice!" << endl;
+        }
+    } while (ch != 4);
+
+    return 0;
+}
