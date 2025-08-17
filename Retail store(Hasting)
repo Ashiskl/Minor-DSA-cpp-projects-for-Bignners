@@ -1,0 +1,165 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+const int TABLE_SIZE = 10;
+const int EMPTY = -1;
+const int DELETED = -999;
+
+// Parallel arrays for storing product details
+int productCode[TABLE_SIZE];
+string productName[TABLE_SIZE];
+double productPrice[TABLE_SIZE];
+int productStock[TABLE_SIZE];
+
+// Initialize the inventory
+void initialize() {
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        productCode[i] = EMPTY;
+        productName[i] = "";
+        productPrice[i] = 0.0;
+        productStock[i] = 0;
+    }
+}
+
+// Hash function
+int hashFunction(int code) {
+    return code % TABLE_SIZE;
+}
+
+// Add or update a product
+void addOrUpdateProduct(int code, string name, double price, int stock) {
+    int index = hashFunction(code);
+    int start = index;
+
+    while (productCode[index] != EMPTY && productCode[index] != DELETED && productCode[index] != code) {
+        index = (index + 1) % TABLE_SIZE;
+        if (index == start) {
+            cout << "Inventory is full! Cannot add product.\n";
+            return;
+        }
+    }
+
+    productCode[index] = code;
+    productName[index] = name;
+    productPrice[index] = price;
+    productStock[index] = stock;
+
+    cout << "Product (" << code << ") added/updated at slot " << index << ".\n";
+}
+
+// Remove a product
+void removeProduct(int code) {
+    int index = hashFunction(code);
+    int start = index;
+
+    while (productCode[index] != EMPTY) {
+        if (productCode[index] == code) {
+            productCode[index] = DELETED;
+            productName[index] = "";
+            productPrice[index] = 0.0;
+            productStock[index] = 0;
+            cout << "Product (" << code << ") removed from slot " << index << ".\n";
+            return;
+        }
+        index = (index + 1) % TABLE_SIZE;
+        if (index == start) break;
+    }
+
+    cout << "Product not found.\n";
+}
+
+// Search for a product
+void searchProduct(int code) {
+    int index = hashFunction(code);
+    int start = index;
+
+    while (productCode[index] != EMPTY) {
+        if (productCode[index] == code) {
+            cout << "Product found at slot " << index << ":\n";
+            cout << "Code: " << productCode[index] << "\n";
+            cout << "Name: " << productName[index] << "\n";
+            cout << "Price: $" << productPrice[index] << "\n";
+            cout << "Stock: " << productStock[index] << "\n";
+            return;
+        }
+        index = (index + 1) % TABLE_SIZE;
+        if (index == start) break;
+    }
+
+    cout << "Product not found.\n";
+}
+
+// Display all products
+void displayInventory() {
+    cout << "\nInventory Status:\n";
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        cout << "[" << i << "]: ";
+        if (productCode[i] == EMPTY)
+            cout << "Empty";
+        else if (productCode[i] == DELETED)
+            cout << "Deleted";
+        else
+            cout << "Code: " << productCode[i] << ", Name: " << productName[i]
+                 << ", Price: $" << productPrice[i] << ", Stock: " << productStock[i];
+        cout << endl;
+    }
+}
+
+int main() {
+    initialize();
+    int choice, code, stock;
+    double price;
+    string name;
+
+    do {
+        cout << "\n------ Retail Store Inventory Menu ------\n";
+        cout << "1. Add/Update Product\n";
+        cout << "2. Remove Product\n";
+        cout << "3. Search Product\n";
+        cout << "4. Display Inventory\n";
+        cout << "5. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter Product Code: ";
+                cin >> code;
+                cout << "Enter Product Name: ";
+                cin.ignore();
+                getline(cin, name);
+                cout << "Enter Price: ";
+                cin >> price;
+                cout << "Enter Stock Quantity: ";
+                cin >> stock;
+                addOrUpdateProduct(code, name, price, stock);
+                break;
+
+            case 2:
+                cout << "Enter Product Code to remove: ";
+                cin >> code;
+                removeProduct(code);
+                break;
+
+            case 3:
+                cout << "Enter Product Code to search: ";
+                cin >> code;
+                searchProduct(code);
+                break;
+
+            case 4:
+                displayInventory();
+                break;
+
+            case 5:
+                cout << "Exiting program...\n";
+                break;
+
+            default:
+                cout << "Invalid choice! Try again.\n";
+        }
+    } while (choice != 5);
+
+    return 0;
+}
