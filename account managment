@@ -1,0 +1,142 @@
+#include <iostream>
+using namespace std;
+
+class Account {
+    const int MAX = 10;      
+    const int EMPTY = -1;     
+    int accNumber[10];
+    string accName[10];
+    double accBalance[10];
+    int total;                 
+public:
+    Account() {
+        total = 0;
+        for (int i = 0; i < MAX; i++) {
+            accNumber[i] = EMPTY;
+            accName[i] = "";
+            accBalance[i] = 0.0;
+        }
+    }
+
+    void createAccount() {
+        if (total < MAX) {
+            int number;
+            string name;
+            double balance;
+            cout << "Enter Account Number: ";
+            cin >> number;
+            cout << "Enter Account Holder Name: ";
+            cin >> name;
+            cout << "Enter Initial Balance: ";
+            cin >> balance;
+
+            accNumber[total] = number;
+            accName[total] = name;
+            accBalance[total] = balance;
+            total++;
+            cout << "Account created successfully\n";
+        } else {
+            cout << "Cannot create more accounts. Limit reached\n";
+        }
+    }
+
+    int searchByNumber(int key) {
+        for (int i = 0; i < total; i++) {
+            if (accNumber[i] == key)
+                return i;
+        }
+        return -1;
+    }
+
+    void deposit() {
+        int number;
+        double amount;
+        cout << "Enter Account Number: ";
+        cin >> number;
+        cout << "Enter Amount to Deposit: ";
+        cin >> amount;
+
+        int pos = searchByNumber(number);
+        if (pos == -1) {
+            cout << "Account not found" << endl;
+        } else {
+            accBalance[pos] += amount;
+            cout << "Amount deposited successfully" << endl;
+        }
+    }
+
+    void withdraw() {
+        int number;
+        double amount;
+        cout << "Enter Account Number: ";
+        cin >> number;
+        cout << "Enter Amount to Withdraw: ";
+        cin >> amount;
+
+        int pos = searchByNumber(number);
+        if (pos == -1) {
+            cout << "Account not found" << endl;
+        } else {
+            if (2000 > accBalance[pos]) {
+                cout << "Insufficient balance!" <<"your balance is "<<accBalance[pos]<< endl;
+            } else {
+                accBalance[pos] -= amount;
+                cout << "Withdrawal successful" << endl;
+            }
+        }
+    }
+
+    void display() {
+        int number;
+        cout << "Enter Account Number: ";
+        cin >> number;
+
+        int pos = searchByNumber(number);
+        if (pos == -1) {
+            cout << "Account not found.\n";
+        } else {
+            cout << "\n---- Account Details ----\n";
+            cout << "Account No : " << accNumber[pos] << endl;
+            cout << "Name       : " << accName[pos] << endl;
+            cout << "Balance    : " << accBalance[pos] << endl;
+        }
+    }
+};
+
+int main() {
+    Account bank;
+    int choice;
+
+    do {
+        cout << "\n===== BANK MENU =====\n";
+        cout << "1. Create Account\n";
+        cout << "2. Deposit Money\n";
+        cout << "3. Withdraw Money\n";
+        cout << "4. Display Account Details\n";
+        cout << "5. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: 
+                bank.createAccount();
+                break;
+            case 2: 
+                bank.deposit(); 
+                break;
+            case 3: 
+                bank.withdraw(); 
+                break;
+            case 4: 
+                bank.display(); 
+                break;
+            case 5:
+                cout << "Thank you\n";
+                break;
+            default:
+                cout << "Invalid choice\n";
+        }
+    } while (choice != 5);
+
+    return 0;
+}
